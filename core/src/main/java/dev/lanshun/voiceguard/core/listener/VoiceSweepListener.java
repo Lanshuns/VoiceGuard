@@ -29,6 +29,11 @@ public class VoiceSweepListener {
     }
 
     this.counter = 0;
-    this.autoMuteService.sweep();
+
+    try {
+      this.autoMuteService.sweep();
+    } catch (Throwable throwable) {
+      this.autoMuteService.logSweepFailure(throwable);
+    }
   }
 }

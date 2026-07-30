@@ -1,6 +1,8 @@
 package dev.lanshun.voiceguard.core;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +26,7 @@ import net.labymod.api.labyconnect.LabyConnectSession;
 public class AutoMuteService {
 
   private static final int RELEASE_MARGIN = 6;
+  private static final int SNAPSHOT_ATTEMPTS = 3;
 
   private final VoiceGuardHost addon;
   private final VoiceChatBridge bridge;
@@ -151,8 +154,12 @@ public class AutoMuteService {
 
     VoiceUserRegistry registry = this.bridge.userRegistry();
     if (registry != null) {
-      for (VoiceUser voiceUser : registry.getAll()) {
-        this.guard(voiceUser);
+      try {
+        for (VoiceUser voiceUser : registry.getAll()) {
+          this.guard(voiceUser);
+        }
+      } catch (Throwable throwable) {
+        this.addon.logError("Could not walk the voice chat user list.", throwable);
       }
     }
 
@@ -203,6 +210,11 @@ public class AutoMuteService {
     }
   }
 
+  /** Reports a sweep that failed, so one bad tick cannot escape into LabyMod's event dispatch. */
+  public void logSweepFailure(Throwable throwable) {
+    this.addon.logError("The Voice Guard sweep failed and will run again shortly.", throwable);
+  }
+
   /** Whether VoiceChat is loaded and usable. */
   public boolean isVoiceChatAvailable() {
     return this.bridge.isAvailable();
@@ -217,11 +229,6 @@ public class AutoMuteService {
 
     Float volume = volumes.get(uniqueId);
     return volume != null && volume <= 0.0F;
-  }
-
-  /** Whether this player would make the microphone guard fire. */
-  public synchronized boolean countsForGuard(UUID uniqueId) {
-    return this.isMuted(uniqueId);
   }
 
   /**
@@ -327,12 +334,6 @@ public class AutoMuteService {
     }
 
     return entries;
-  }
-
-  /** Whether this mute was set by the user rather than applied by the addon. */
-  public synchronized boolean isMutedByUser(UUID uniqueId) {
-    return this.isMuted(uniqueId)
-        && !this.addon.configuration().managedMutes().get().contains(uniqueId);
   }
 
   /** Every player the user muted themselves whose name is known, sorted, however long ago. */
@@ -486,13 +487,9 @@ public class AutoMuteService {
     UUID currentChannel = this.bridge.currentChannelId();
     boolean inCustomChannel = this.bridge.isInCustomChannel();
 
-    for (VoiceUser voiceUser : registry.getAll()) {
-      if (voiceUser == null) {
-        continue;
-      }
-
-      try {
-        if (voiceUser.isClient()) {
+    try {
+      for (VoiceUser voiceUser : registry.getAll()) {
+        if (voiceUser == null || voiceUser.isClient()) {
           continue;
         }
 
@@ -515,9 +512,9 @@ public class AutoMuteService {
         if (this.isWithinGuardRadius(uniqueId)) {
           return true;
         }
-      } catch (Throwable throwable) {
-        this.addon.logError("Could not evaluate a voice chat user.", throwable);
       }
+    } catch (Throwable throwable) {
+      this.addon.logError("Could not evaluate the voice chat user list.", throwable);
     }
 
     return false;
@@ -710,8 +707,13 @@ public class AutoMuteService {
       return;
     }
 
+    Map<UUID, Float> snapshot = snapshot(volumes);
+    if (snapshot == null) {
+      return;
+    }
+
     Set<UUID> managed = this.addon.configuration().managedMutes().get();
-    for (Map.Entry<UUID, Float> entry : volumes.entrySet()) {
+    for (Map.Entry<UUID, Float> entry : snapshot.entrySet()) {
       UUID uniqueId = entry.getKey();
       if (entry.getValue() > 0.0F || managed.contains(uniqueId) || names.containsKey(uniqueId)) {
         continue;
@@ -727,12 +729,28 @@ public class AutoMuteService {
     Iterator<UUID> iterator = names.keySet().iterator();
     while (iterator.hasNext()) {
       UUID uniqueId = iterator.next();
-      Float volume = volumes.get(uniqueId);
+      Float volume = snapshot.get(uniqueId);
       if (volume == null || volume > 0.0F) {
         iterator.remove();
         this.dirty = true;
       }
     }
+  }
+
+  /**
+   * Copies VoiceChat's volume map so it can be read safely, since VoiceChat writes to it from its
+   * own audio thread and a plain iteration can fail part way through.
+   */
+  private static Map<UUID, Float> snapshot(Map<UUID, Float> volumes) {
+    for (int attempt = 0; attempt < SNAPSHOT_ATTEMPTS; attempt++) {
+      try {
+        return new HashMap<>(volumes);
+      } catch (ConcurrentModificationException exception) {
+        continue;
+      }
+    }
+
+    return null;
   }
 
   /** Fills in names for allowlist entries saved before a name could be resolved. */

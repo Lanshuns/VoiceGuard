@@ -193,8 +193,7 @@ public final class AutoMuteVerification {
     check("nobody is auto muted when mute by default is off", !f.volumes.containsKey(stranger));
 
     f.service.mute(blocked);
-    check("but a hand muted player still counts for the guard",
-        f.service.countsForGuard(blocked));
+    check("but a hand muted player still counts for the guard", f.service.isMuted(blocked));
     check("and the guard still engages",
         f.service.decideMicrophone(true, true, false) == AutoMuteService.MicrophoneAction.MUTE);
   }
@@ -375,10 +374,10 @@ public final class AutoMuteVerification {
     f.service.mute(blocked);            // muted by hand
     f.service.unmute(audible);          // explicitly audible
 
-    check("the guard counts an auto-muted stranger", f.service.countsForGuard(stranger));
-    check("the guard counts somebody muted by hand", f.service.countsForGuard(blocked));
-    check("the guard ignores somebody you can hear", !f.service.countsForGuard(audible));
-    check("the guard ignores an unknown player", !f.service.countsForGuard(UUID.randomUUID()));
+    check("the guard counts an auto-muted stranger", f.service.isMuted(stranger));
+    check("the guard counts somebody muted by hand", f.service.isMuted(blocked));
+    check("the guard ignores somebody you can hear", !f.service.isMuted(audible));
+    check("the guard ignores an unknown player", !f.service.isMuted(UUID.randomUUID()));
   }
 
   /**
@@ -398,17 +397,12 @@ public final class AutoMuteVerification {
         muteThenCheck(f, elsewhere));
   }
 
-  /** Hand mutes are flagged for the yellow styling, listed by name, and dropped on unmute. */
+  /** Hand mutes are listed by name and dropped on unmute. */
   private static void handMutesAreToldApartAndRemembered() {
     Fixture f = new Fixture();
     UUID byHand = UUID.randomUUID();
-    UUID byAddon = UUID.randomUUID();
 
     f.service.mute(byHand);
-    f.service.guard(byAddon, false);
-
-    check("a hand muted player is flagged as muted by you", f.service.isMutedByUser(byHand));
-    check("an addon muted player is not", !f.service.isMutedByUser(byAddon));
 
     f.config.manualMuteNames().get().put(byHand, "Target");
     check("the muted by you list carries the remembered name",
@@ -451,8 +445,6 @@ public final class AutoMuteVerification {
         f.config.managedMutes().get().contains(stranger));
     check("a hand mute is not recorded as managed",
         !f.config.managedMutes().get().contains(byHand));
-    check("the hand mute reads as muted by you", f.service.isMutedByUser(byHand));
-    check("the addon mute does not", !f.service.isMutedByUser(stranger));
   }
 
   private static boolean contains(java.util.List<AutoMuteService.PlayerEntry> entries, String name) {

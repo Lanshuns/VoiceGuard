@@ -15,27 +15,30 @@ import net.labymod.api.addon.LoadedAddon;
 public class VoiceChatBridge {
 
   private static final String VOICECHAT = "voicechat";
+  private static final long RETRY_INTERVAL_MILLIS = 5000L;
 
   private volatile VoiceChat voiceChat;
-  private volatile boolean unavailable;
+  private volatile long nextAttempt;
 
   /**
-   * Resolves the VoiceChat instance through LabyMod's addon service, which keeps this to published
-   * API packages.
+   * Resolves the VoiceChat instance through LabyMod's addon service, retrying at intervals so an
+   * addon installed before VoiceChat has loaded still finds it without a restart.
    */
   public VoiceChat voiceChat() {
     if (this.voiceChat != null) {
       return this.voiceChat;
     }
 
-    if (this.unavailable) {
+    long now = System.currentTimeMillis();
+    if (now < this.nextAttempt) {
       return null;
     }
+
+    this.nextAttempt = now + RETRY_INTERVAL_MILLIS;
 
     try {
       Optional<LoadedAddon> loadedAddon = Laby.labyAPI().addonService().getAddon(VOICECHAT);
       if (loadedAddon.isEmpty()) {
-        this.unavailable = true;
         return null;
       }
 
@@ -44,7 +47,6 @@ public class VoiceChatBridge {
         this.voiceChat = (VoiceChat) instance;
       }
     } catch (Throwable throwable) {
-      this.unavailable = true;
       return null;
     }
 

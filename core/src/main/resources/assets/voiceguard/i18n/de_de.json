@@ -1,0 +1,59 @@
+{
+  "voiceguard": {
+    "interaction": {
+      "unmute": "Stummschaltung aufheben",
+      "mute": "Stummschalten"
+    },
+    "settings": {
+      "name": "Voice Guard",
+      "muteByDefault": {
+        "name": "Standardmäßig alle stummschalten",
+        "description": "Spieler, die du nicht freigeschaltet hast, sind zunächst stumm. Beim Ausschalten werden sofort alle von diesem Addon stummgeschalteten Spieler auf allen Servern freigegeben. Das lässt sich nicht rückgängig machen. Deine eigenen Stummschaltungen bleiben erhalten."
+      },
+      "exemptFriends": {
+        "name": "Freunde immer hören",
+        "description": "Personen auf deiner LabyMod-Freundesliste werden nie automatisch stummgeschaltet."
+      },
+      "rememberUnmuted": {
+        "name": "Freigeschaltete merken",
+        "description": "Wen du einmal freigeschaltet hast, bleibt auch in Zukunft hörbar. Deaktiviere dies, damit Freischaltungen nur bis zum Beenden gelten."
+      },
+      "microphoneGuard": {
+        "name": "Mikrofon automatisch stummschalten",
+        "description": "Schaltet dein eigenes Mikrofon stumm, solange jemand in Hörweite ist, den du nicht hören kannst. Solange dies aktiv ist, hört dich niemand, auch keine Freunde."
+      },
+      "guardRadius": {
+        "name": "Entfernung, die als Hörweite zählt",
+        "description": "Wie nah ein stummgeschalteter Spieler sein muss, in Blöcken, bevor dein Mikrofon abgeschaltet wird. 24 entspricht der Reichweite, in der Näherungs-Voice tatsächlich trägt. Spieler in deinem Sprachkanal zählen immer, egal wie weit entfernt."
+      }
+    },
+    "command": {
+      "header": "Voice Guard",
+      "audible": "Du hörst:",
+      "none": "niemanden",
+      "hint": "Klicke auf einen Namen, um ihn stummzuschalten oder freizugeben.",
+      "notFound": "Kein solcher Spieler:",
+      "clickToMute": "Klicken zum Stummschalten",
+      "clickToUnmute": "Klicken zum Freigeben",
+      "mutedByYou": "Von dir stummgeschaltet:",
+      "allTimeHeader": "Von dir, insgesamt",
+      "autoMuted": "Automatisch stummgeschaltet:",
+      "unmutedByYou": "Von dir freigeschaltet:",
+      "nearbyHeader": "Aktuell in Hörweite",
+      "didMute": "Stummgeschaltet",
+      "didUnmute": "Freigegeben",
+      "allHintBefore": "Nutze",
+      "allHintAfter": "für alle von dir stummgeschalteten oder freigegebenen Spieler.",
+      "nearbyHintBefore": "Nutze",
+      "nearbyHintAfter": "für alle aktuell in Hörweite."
+    },
+    "join": {
+      "title": "Voice Guard",
+      "connected": "verbunden mit",
+      "audible": "Du hörst:",
+      "autoMuted": "Automatisch stummgeschaltet:",
+      "detailsBefore": "Nutze",
+      "detailsAfter": "für weitere Details."
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "voiceguard": {
+    "interaction": {
+      "unmute": "Unmute",
+      "mute": "Mute"
+    },
+    "settings": {
+      "name": "Voice Guard",
+      "muteByDefault": {
+        "name": "Mute everyone by default",
+        "description": "Players you have not unmuted start muted. Turning this off immediately unmutes everyone this addon muted, on every server, and cannot be undone. Your own manual mutes are kept."
+      },
+      "exemptFriends": {
+        "name": "Always hear friends",
+        "description": "People on your LabyMod friends list are never muted automatically."
+      },
+      "rememberUnmuted": {
+        "name": "Remember who I unmute",
+        "description": "Once you unmute somebody they stay audible in future sessions. Turn this off to have unmutes last only until you quit."
+      },
+      "microphoneGuard": {
+        "name": "Auto mute microphone",
+        "description": "Switches your own microphone off while someone you cannot hear is close enough to hear you. So whenever this is active nobody hears you, friends included."
+      },
+      "guardRadius": {
+        "name": "Distance that counts as earshot",
+        "description": "How close a muted player has to be, in blocks, before your microphone is cut. 24 matches the range at which proximity voice actually carries. People sharing a voice channel with you always count, however far away they are, because channel audio ignores distance."
+      }
+    },
+    "command": {
+      "header": "Voice Guard",
+      "audible": "You can hear:",
+      "none": "nobody",
+      "hint": "Click a name to mute or unmute them.",
+      "notFound": "No such player:",
+      "clickToMute": "Click to mute",
+      "clickToUnmute": "Click to unmute",
+      "mutedByYou": "Muted by you:",
+      "allTimeHeader": "By you, all time",
+      "autoMuted": "Auto muted:",
+      "unmutedByYou": "Unmuted by you:",
+      "nearbyHeader": "In voice range now",
+      "didMute": "Muted",
+      "didUnmute": "Unmuted",
+      "allHintBefore": "Use",
+      "allHintAfter": "to see everyone you muted or unmuted.",
+      "nearbyHintBefore": "Use",
+      "nearbyHintAfter": "to see who is in voice range now."
+    },
+    "join": {
+      "title": "Voice Guard",
+      "connected": "connected to",
+      "audible": "You can hear:",
+      "autoMuted": "Auto muted:",
+      "detailsBefore": "Use",
+      "detailsAfter": "for more details."
+    }
+  }
+}

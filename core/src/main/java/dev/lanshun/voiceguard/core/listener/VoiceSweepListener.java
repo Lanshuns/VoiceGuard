@@ -7,7 +7,6 @@ import net.labymod.api.event.client.lifecycle.GameTickEvent;
 
 /** Drives the periodic sweep, which is the backstop for anything the events miss. */
 public class VoiceSweepListener {
-
   private static final int SWEEP_INTERVAL_TICKS = 10;
 
   private final AutoMuteService autoMuteService;
@@ -17,7 +16,6 @@ public class VoiceSweepListener {
     this.autoMuteService = autoMuteService;
   }
 
-  /** Runs the sweep once the interval has elapsed. */
   @Subscribe
   public void onGameTick(GameTickEvent event) {
     if (event.phase() != Phase.PRE) {

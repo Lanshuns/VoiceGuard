@@ -13,17 +13,12 @@ import net.labymod.api.addon.LoadedAddon;
 
 /** Guarded access to the official VoiceChat addon. */
 public class VoiceChatBridge {
-
   private static final String VOICECHAT = "voicechat";
   private static final long RETRY_INTERVAL_MILLIS = 5000L;
 
   private volatile VoiceChat voiceChat;
   private volatile long nextAttempt;
 
-  /**
-   * Resolves the VoiceChat instance through LabyMod's addon service, retrying at intervals so an
-   * addon installed before VoiceChat has loaded still finds it without a restart.
-   */
   public VoiceChat voiceChat() {
     if (this.voiceChat != null) {
       return this.voiceChat;
@@ -53,12 +48,10 @@ public class VoiceChatBridge {
     return this.voiceChat;
   }
 
-  /** Whether VoiceChat is loaded and ready. */
   public boolean isAvailable() {
     return this.voiceChat() != null;
   }
 
-  /** VoiceChat's own configuration, or {@code null} if it is unavailable. */
   public VoiceChatConfiguration configuration() {
     VoiceChat voiceChat = this.voiceChat();
     return voiceChat == null ? null : voiceChat.configuration();
@@ -76,19 +69,16 @@ public class VoiceChatBridge {
     return volumes instanceof Map ? (Map<UUID, Float>) volumes : null;
   }
 
-  /** VoiceChat's registry of known voice users. */
   public VoiceUserRegistry userRegistry() {
     VoiceChat voiceChat = this.voiceChat();
     return voiceChat == null ? null : voiceChat.referenceStorage().voiceUserRegistry();
   }
 
-  /** VoiceChat's channel controller. */
   public ChannelController channelController() {
     VoiceChat voiceChat = this.voiceChat();
     return voiceChat == null ? null : voiceChat.referenceStorage().channelController();
   }
 
-  /** Whether the client is in a real voice channel rather than the shared lobby. */
   public boolean isInCustomChannel() {
     ChannelController controller = this.channelController();
     if (controller == null) {
@@ -102,7 +92,6 @@ public class VoiceChatBridge {
     }
   }
 
-  /** The id of the channel the client is currently in. */
   public UUID currentChannelId() {
     ChannelController controller = this.channelController();
     if (controller == null) {
@@ -116,10 +105,6 @@ public class VoiceChatBridge {
     }
   }
 
-  /**
-   * The channel entry for a player, or {@code null} when they are only audible through proximity
-   * chat and therefore have no channel entry.
-   */
   public ChannelUser channelUser(UUID uniqueId) {
     ChannelController controller = this.channelController();
     if (controller == null) {

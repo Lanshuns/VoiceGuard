@@ -1,9 +1,5 @@
 {
   "voiceguard": {
-    "interaction": {
-      "unmute": "Stummschaltung aufheben",
-      "mute": "Stummschalten"
-    },
     "settings": {
       "name": "Voice Guard",
       "muteByDefault": {
@@ -13,10 +9,6 @@
       "exemptFriends": {
         "name": "Freunde immer hören",
         "description": "Personen auf deiner LabyMod-Freundesliste werden nie automatisch stummgeschaltet."
-      },
-      "rememberUnmuted": {
-        "name": "Freigeschaltete merken",
-        "description": "Wen du einmal freigeschaltet hast, bleibt auch in Zukunft hörbar. Deaktiviere dies, damit Freischaltungen nur bis zum Beenden gelten."
       },
       "microphoneGuard": {
         "name": "Mikrofon automatisch stummschalten",
@@ -29,23 +21,15 @@
     },
     "command": {
       "header": "Voice Guard",
-      "audible": "Du hörst:",
-      "none": "niemanden",
-      "hint": "Klicke auf einen Namen, um ihn stummzuschalten oder freizugeben.",
-      "notFound": "Kein solcher Spieler:",
-      "clickToMute": "Klicken zum Stummschalten",
-      "clickToUnmute": "Klicken zum Freigeben",
-      "mutedByYou": "Von dir stummgeschaltet:",
-      "allTimeHeader": "Von dir, insgesamt",
-      "autoMuted": "Automatisch stummgeschaltet:",
-      "unmutedByYou": "Von dir freigeschaltet:",
       "nearbyHeader": "Aktuell in Hörweite",
-      "didMute": "Stummgeschaltet",
-      "didUnmute": "Freigegeben",
-      "allHintBefore": "Nutze",
-      "allHintAfter": "für alle von dir stummgeschalteten oder freigegebenen Spieler.",
-      "nearbyHintBefore": "Nutze",
-      "nearbyHintAfter": "für alle aktuell in Hörweite."
+      "audible": "Du hörst:",
+      "autoMuted": "Automatisch stummgeschaltet:",
+      "none": "niemanden",
+      "changeHintBefore": "Mittelklick auf einen Spieler und VoiceChat wählen, oder",
+      "changeHintAfter": "nutzen, um ihn stumm oder frei zu schalten.",
+      "reasonFriend": "Freund",
+      "reasonUnmuted": "Von dir freigegeben",
+      "reasonAutoMuted": "Von Voice Guard stummgeschaltet"
     },
     "join": {
       "title": "Voice Guard",

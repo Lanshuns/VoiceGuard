@@ -15,3 +15,6 @@ access_widener_index.json
 
 # macOS
 .DS_Store
+
+# Built addon
+*-release.jar

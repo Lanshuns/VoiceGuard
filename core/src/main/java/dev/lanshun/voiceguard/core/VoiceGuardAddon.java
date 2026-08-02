@@ -5,24 +5,17 @@ import dev.lanshun.voiceguard.core.listener.FriendListener;
 import dev.lanshun.voiceguard.core.listener.ServerJoinListener;
 import dev.lanshun.voiceguard.core.listener.VoiceStreamListener;
 import dev.lanshun.voiceguard.core.listener.VoiceSweepListener;
-import dev.lanshun.voiceguard.core.ui.VoiceGuardBulletPoint;
 import net.labymod.api.addon.LabyAddon;
 import net.labymod.api.client.component.Component;
-import net.labymod.api.client.entity.player.interaction.InteractionMenuRegistry;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.client.lifecycle.ShutdownEvent;
 import net.labymod.api.models.addon.annotation.AddonMain;
 
-/**
- * Inverts the default of LabyMod's VoiceChat addon, so that every participant starts muted and the
- * user unmutes only the people they want to hear.
- */
+/** Everyone in voice chat starts muted; the user unmutes who they want to hear. */
 @AddonMain
 public class VoiceGuardAddon extends LabyAddon<VoiceGuardConfiguration> implements VoiceGuardHost {
-
   private AutoMuteService autoMuteService;
 
-  /** Registers the hooks. */
   @Override
   protected void enable() {
     this.registerSettingCategory();
@@ -36,11 +29,6 @@ public class VoiceGuardAddon extends LabyAddon<VoiceGuardConfiguration> implemen
       this.registerListener(new ServerJoinListener(this, this.autoMuteService));
       this.registerCommand(new VoiceGuardCommand(this.autoMuteService));
 
-      InteractionMenuRegistry interactionMenu = this.labyAPI().interactionMenuRegistry();
-      interactionMenu.register(
-          "voiceguard_unmute", new VoiceGuardBulletPoint(this.autoMuteService, true));
-      interactionMenu.register(
-          "voiceguard_mute", new VoiceGuardBulletPoint(this.autoMuteService, false));
     } catch (Throwable throwable) {
       this.logger().error(
           "Voice Guard could not hook into the VoiceChat addon and will stay inactive.", throwable);
@@ -58,10 +46,6 @@ public class VoiceGuardAddon extends LabyAddon<VoiceGuardConfiguration> implemen
     return VoiceGuardConfiguration.class;
   }
 
-  /**
-   * Undoes the addon's mutes the moment either switch is turned off, rather than waiting for the
-   * next sweep.
-   */
   private void registerReleaseOnDisable() {
     VoiceGuardConfiguration configuration = this.configuration();
 
@@ -78,7 +62,6 @@ public class VoiceGuardAddon extends LabyAddon<VoiceGuardConfiguration> implemen
     });
   }
 
-  /** Leaves the client as it was found when the game closes. */
   @Subscribe
   public void onShutdown(ShutdownEvent event) {
     if (this.autoMuteService != null) {

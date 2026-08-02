@@ -1,9 +1,5 @@
 {
   "voiceguard": {
-    "interaction": {
-      "unmute": "Unmute",
-      "mute": "Mute"
-    },
     "settings": {
       "name": "Voice Guard",
       "muteByDefault": {
@@ -13,10 +9,6 @@
       "exemptFriends": {
         "name": "Always hear friends",
         "description": "People on your LabyMod friends list are never muted automatically."
-      },
-      "rememberUnmuted": {
-        "name": "Remember who I unmute",
-        "description": "Once you unmute somebody they stay audible in future sessions. Turn this off to have unmutes last only until you quit."
       },
       "microphoneGuard": {
         "name": "Auto mute microphone",
@@ -29,23 +21,15 @@
     },
     "command": {
       "header": "Voice Guard",
-      "audible": "You can hear:",
-      "none": "nobody",
-      "hint": "Click a name to mute or unmute them.",
-      "notFound": "No such player:",
-      "clickToMute": "Click to mute",
-      "clickToUnmute": "Click to unmute",
-      "mutedByYou": "Muted by you:",
-      "allTimeHeader": "By you, all time",
-      "autoMuted": "Auto muted:",
-      "unmutedByYou": "Unmuted by you:",
       "nearbyHeader": "In voice range now",
-      "didMute": "Muted",
-      "didUnmute": "Unmuted",
-      "allHintBefore": "Use",
-      "allHintAfter": "to see everyone you muted or unmuted.",
-      "nearbyHintBefore": "Use",
-      "nearbyHintAfter": "to see who is in voice range now."
+      "audible": "You can hear:",
+      "autoMuted": "Auto muted:",
+      "none": "nobody",
+      "changeHintBefore": "Middle click a player and choose VoiceChat, or run",
+      "changeHintAfter": "to mute or unmute them.",
+      "reasonFriend": "Friend",
+      "reasonUnmuted": "You unmuted them",
+      "reasonAutoMuted": "Muted by Voice Guard"
     },
     "join": {
       "title": "Voice Guard",

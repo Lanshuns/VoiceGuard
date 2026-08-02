@@ -13,7 +13,6 @@ import net.labymod.api.event.client.network.server.ServerJoinEvent;
 
 /** Prints a short summary in chat shortly after joining a server. */
 public class ServerJoinListener {
-
   private static final int DELAY_TICKS = 160;
 
   private final VoiceGuardHost addon;
@@ -27,14 +26,12 @@ public class ServerJoinListener {
     this.autoMuteService = autoMuteService;
   }
 
-  /** Records the server that was joined and starts the countdown. */
   @Subscribe
   public void onServerJoin(ServerJoinEvent event) {
     this.address = describe(event.serverData());
     this.countdown = DELAY_TICKS;
   }
 
-  /** Sends the summary once the countdown elapses. */
   @Subscribe
   public void onGameTick(GameTickEvent event) {
     if (event.phase() != Phase.PRE || this.countdown <= 0) {
@@ -54,7 +51,6 @@ public class ServerJoinListener {
     }
   }
 
-  /** Builds and sends the summary. */
   private void announce() {
     if (!this.addon.configuration().enabled().get() || !this.autoMuteService.isVoiceChatAvailable()) {
       return;
@@ -85,7 +81,6 @@ public class ServerJoinListener {
             .append(Component.translatable("voiceguard.join.detailsAfter", NamedTextColor.GRAY)));
   }
 
-  /** The server address as the user would recognise it, host and port only when non standard. */
   private static String describe(ServerData serverData) {
     try {
       if (serverData == null) {

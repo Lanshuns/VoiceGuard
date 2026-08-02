@@ -1,4 +1,4 @@
-<img src="icon.png" alt="Voice Guard" width="128">
+<img src="store-assets/icon.png" alt="Voice Guard" width="128">
 
 # Voice Guard
 
@@ -27,20 +27,11 @@ The important hook is `AudioStreamStartEvent`. VoiceChat creates the audio strea
 and only then queues the first packet of audio, so muting there means **not a single frame of a
 stranger's voice is ever played**.
 
-### Unmuting
+Muting and unmuting stays in VoiceChat's own controls: middle click a player and choose
+**VoiceChat**, or run `/vm <name>`. Voice Guard notices either one and remembers an unmute, so that
+player stays audible on any server.
 
-There are three ways, and they all do the same thing:
-
-* Middle click a player and choose **Unmute**.
-* Run `/vg` and click their name in the listing.
-* Raise their volume slider in VoiceChat's own user panel.
-
-Whichever you use, Voice Guard notices, hands that player back to you, and remembers them so they
-stay audible the next time you meet, on any server. Unmuting is a decision about a person rather
-than about a server, so it is deliberately not scoped to one. `/vg` shows only players present
-where you are, and `/vg all` shows the full list for pruning.
-
-### Staying out of the way
+It also stays out of your way:
 
 * Only players with no volume entry at all are touched, so any volume you chose is never overridden.
 * Every mute it applies is recorded and persisted, so its own entries can always be told apart from
@@ -49,21 +40,12 @@ where you are, and `/vg all` shows the full list for pruning.
 
 ## Commands
 
-| Command | Effect |
-|---|---|
-| `/vg` | Players currently in voice range: who you can hear and who was auto muted. Every name is clickable. |
-| `/vg all` | Your standing decisions across every server: unmuted by you, muted by you. |
-| `/vg mute <name>` | Mutes that player. |
-| `/vg unmute <name>` | Unmutes that player. |
+`/vg` lists the players in voice range, split into who you can hear and who was auto muted. Hover a
+name to see why it is in its group. `/voiceguard` is the long form. The command only reports; it
+never changes anything.
 
-`/voiceguard` works as the long form of all three.
-
-Shortly after joining a server the addon prints a short summary of how many players you can hear
-and how many were auto muted.
-
-In both listings, green always means you can hear them and red always means you cannot; the labels
-say why. `/vg` deliberately shows only players in voice range, since those are the ones you can act
-on, and points at `/vg all` for the rest.
+Shortly after joining a server the addon prints a summary of how many players you can hear and how
+many were auto muted.
 
 ## Settings
 
@@ -74,7 +56,6 @@ applied and hands your microphone back; your own manual mutes are kept.
 |---|---|---|
 | Mute everyone by default | on | Players you have not unmuted start muted. Turn this off to run the addon for the microphone feature alone. |
 | Always hear friends | on | Players on your LabyMod friends list are never muted automatically. |
-| Remember who I unmute | on | Unmutes persist across sessions. Off means they last until you quit. |
 | Auto mute microphone | off | Mutes your own microphone while a muted player is close enough to hear you. |
 | Distance that counts as earshot | 24 | How near a muted player must be, in blocks, before the guard engages. |
 
@@ -96,49 +77,17 @@ Requires **JDK 21**. On macOS: `brew install openjdk@21`.
 ./gradlew createReleaseJar
 ```
 
-The installable addon is written to `build/libs/voiceguard-release.jar`.
-
-`icon.png` in the repository root is the 512x512 master, which is also the image the addon store
-uses. The 256x256 copy shipped inside the jar lives at
-`core/src/main/resources/assets/voiceguard/textures/icon.png`.
-
-The VoiceChat API is not published to Maven and does not need to be vendored. The `addon("voicechat")`
-line in `build.gradle.kts` makes labygradle download the published addon and place it on the compile
-classpath, so this repository contains no third party code.
-
-## Installing for testing
-
-Copy `build/libs/voiceguard-release.jar` into your LabyMod addons folder:
+The installable addon is written to `build/libs/voiceguard-release.jar`. Copy it into your LabyMod
+addons folder and restart the game:
 
 * **Windows**: `%APPDATA%\.minecraft\labymod-neo\addons\`
 * **macOS**: `~/Library/Application Support/minecraft/labymod-neo/addons/`
 * **Linux**: `~/.minecraft/labymod-neo/addons/`
 
-Restart the game. Voice Guard appears in the LabyMod settings under its own category.
+`store-assets/icon.png` is the 512x512 master, which is also the image the addon store uses. The
+256x256 copy shipped inside the jar lives at
+`core/src/main/resources/assets/voiceguard/textures/icon.png`.
 
-## Automated checks
-
-The mute decisions run outside Minecraft, so they can be checked on any machine:
-
-```bash
-./gradlew :core:classes && verify/run.sh
-```
-
-This exercises the real `AutoMuteService` against a stubbed volume map and covers muting on sight,
-never muting yourself, never overriding a volume you chose, detecting a manual unmute, the
-allowlist, the friend exemption, releasing on disable, cleaning up mutes left by a crashed session,
-and the microphone guard's state machine.
-
-## Testing in game
-
-The checks above cannot produce real audio, a second player, or VoiceChat's own configuration file,
-so these four are verified by hand in game. Run them after changing anything in `AutoMuteService`.
-
-1. **Zero leak**: join a public voice channel and have a second account talk the instant it joins.
-   You should hear nothing, and VoiceChat's user panel should already show them muted.
-2. **Selective unmute**: unmute them by any of the three routes. Audio returns immediately, and they
-   are still audible after a rejoin.
-3. **Friend exemption**: with *Always hear friends* on, adding somebody as a friend makes them
-   audible without a restart.
-4. **No configuration damage**: mute somebody yourself, disable the addon, then check
-   `labymod-neo/configs/voicechat/settings.json`. Your own `playerVolumes` entry must survive.
+The VoiceChat API is not published to Maven and does not need to be vendored. The `addon("voicechat")`
+line in `build.gradle.kts` makes labygradle download the published addon and place it on the compile
+classpath, so this repository contains no third party code.
